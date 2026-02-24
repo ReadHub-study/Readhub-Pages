@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Body = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState(null);
+  const [message, setMessage] = useState("");
+
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    try {
+      const res = await fetch(
+        "https://readhub-study.onrender.com/api/waitlist/add",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        },
+      );
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus("success");
+        setMessage(data.message);
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(data.error);
+      }
+    } catch (err) {
+      setStatus("error");
+      setMessage("Could not reach server. Try again later.");
+    }
+  };
+
   return (
     <section className="text-[#1c1c1c] px-3 mt-25 lg:mt-120">
-      <h1 className="text-[32px] font-semibold text-center leading-10 lg:text-[60px] lg:leading-17 lg:mt-10 lg:font-bold">
+      <h1 className="text-[32px] font-semibold text-center leading-10 lg:text-[60px] lg:leading-17 lg:mt-30 lg:font-bold">
         Welcome to
         <p className="inline pl-2 text-[#2d80f9]">ReadHub</p>{" "}
         <br className="max-lg:hidden" /> Your Personal Library, Redefined.
@@ -25,7 +58,7 @@ const Body = () => {
         </p>
 
         <form
-          action="post"
+          onSubmit={handlesubmit}
           className="flex flex-col items-center justify-between w-full gap-5 lg:w-100 lg:gap-10"
         >
           <label
@@ -34,17 +67,28 @@ const Body = () => {
           >
             <div className="rounded-[100px] shadow-[inset_-2px_-2px_4px_0px_#fafbff,inset_2px_2px_4px_0px_#007dfc26] h-[50px] lg:h-19 overflow-hidden lg:text-[20px] lg:flex">
               <input
-                type="text"
+                type="email"
+                value={email}
                 name="Email"
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Enter your email"
                 className="border-[#4d4d4d] cursor-text font-normal text-ellipsis p-[15px] w-full outline-0"
               />
             </div>
           </label>
-          <button className="rounded-[100px] shadow-[-3px_-3px_6px_0px_#fafbff,3px_3px_6px_0px_#007dfc26] w-[80px] h-[50px] hover:cursor-pointer lg:h-16 lg:w-30 lg:text-xl hover:text-[#2d80f9]">
-            Join
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="rounded-[100px] shadow-[-3px_-3px_6px_0px_#fafbff,3px_3px_6px_0px_#007dfc26] h-[50px] hover:cursor-pointer lg:h-16 lg:w-fit px-7 lg:text-xl hover:text-[#2d80f9]"
+          >
+            {status === "Loading" ? "Adding to waitlist..." : "Join"}
           </button>
+          {message && (
+            <p style={{ color: status === "success" ? "green" : "red" }}>
+              {message}
+            </p>
+          )}
         </form>
       </div>
     </section>
