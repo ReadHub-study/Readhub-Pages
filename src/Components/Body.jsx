@@ -82,7 +82,7 @@ const Body = () => {
             disabled={status === "loading"}
             className="rounded-[100px] shadow-[-3px_-3px_6px_0px_#fafbff,3px_3px_6px_0px_#007dfc26] h-[50px] hover:cursor-pointer lg:h-16 lg:w-fit px-7 lg:text-xl hover:text-[#2d80f9] disabled:opacity-50"
           >
-            {status === "Loading" ? "Adding to waitlist..." : "Join"}
+            {status === "loading" ? "Adding to waitlist..." : "Join"}
           </button>
           {message && (
             <p style={{ color: status === "success" ? "green" : "red" }}>
