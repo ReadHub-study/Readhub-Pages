@@ -22,11 +22,11 @@ const Body = () => {
 
       if (res.ok) {
         setStatus("success");
-        setMessage(data.message);
+        setMessage(data.message || "Successfully added to waitlist!");
         setEmail("");
       } else {
         setStatus("error");
-        setMessage(data.error);
+        setMessage(data.message || data.error || "Something went wrong");
       }
     } catch (err) {
       setStatus("error");
@@ -85,7 +85,11 @@ const Body = () => {
             {status === "Loading" ? "Adding to waitlist..." : "Join"}
           </button>
           {message && (
-            <p style={{ color: status === "success" ? "green" : "red" }}>
+            <p
+              className={`text-sm font-medium ${
+                status === "success" ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {message}
             </p>
           )}
